@@ -90,7 +90,7 @@ export default function Welcome({
 
     return (
         <div className="bg-white text-slate-800 selection:bg-[#2D5A27] selection:text-white font-sans antialiased">
-            <Head title="Selamat Datang" />
+            <Head title="PT Sindang Asih Makmur" />
 
             {/* ── NAVIGATION (fixed, di atas semua section) ── */}
             <nav className="fixed inset-x-0 top-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-100 shadow-sm">
