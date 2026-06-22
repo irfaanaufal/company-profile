@@ -14,6 +14,7 @@ export default function Welcome({
     const [currentSlide, setCurrentSlide] = useState(0);
     const [showAllProducts, setShowAllProducts] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState(null);
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const lenisRef = useRef(null);
 
     useEffect(() => {
@@ -41,26 +42,14 @@ export default function Welcome({
             lenis.destroy();
         };
     }, []);
-
     const handleScrollTo = (e, targetId) => {
         e.preventDefault();
         const element = document.querySelector(targetId);
         if (element && lenisRef.current) {
-            const viewportHeight = window.innerHeight;
-            const elementHeight = element.offsetHeight;
-            
-            // Calculate offset to center the element
-            let offset = -(viewportHeight - elementHeight) / 2;
-
-            // If the element is taller than the available viewport height (subtracting navbar height),
-            // align it to the top instead so the start of the section is visible
-            if (elementHeight > viewportHeight - 64) {
-                offset = -64;
-            }
-
+            // Smooth scroll to the top of the section with a clean offset for the fixed navbar
             lenisRef.current.scrollTo(element, {
-                offset: offset,
-                duration: 1.5,
+                offset: -64,
+                duration: 1.2,
             });
         }
     };
@@ -106,7 +95,7 @@ export default function Welcome({
 
             {/* ── NAVIGATION (fixed, di atas semua section) ── */}
             <nav className="fixed inset-x-0 top-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-100 shadow-sm">
-                <div className="mx-auto max-w-full w-full px-4 sm:px-6 lg:px-8">
+                <div className="mx-full max-w-full w-full px-4 sm:px-6 lg:px-8">
                     <div className="flex h-16 items-center justify-between">
                         {/* Logo */}
                         <div className="flex items-center shrink-0">
@@ -135,39 +124,53 @@ export default function Welcome({
                         </div>
 
                         {/* Nav Links */}
-                        <div className="hidden md:flex items-center gap-8">
+                        <div className="hidden lg:flex items-center gap-6">
                             <a
                                 href="#beranda"
                                 onClick={(e) => handleScrollTo(e, "#beranda")}
-                                className="text-sm font-semibold text-slate-700 hover:text-[#2D5A27] transition cursor-pointer"
+                                className="text-sm font-semibold text-slate-600 hover:text-[#2D5A27] transition-colors relative py-1 after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:bg-[#2D5A27] hover:after:w-full after:transition-all after:duration-300 cursor-pointer"
                             >
                                 Beranda
                             </a>
                             <a
                                 href="#tentang-kami"
                                 onClick={(e) => handleScrollTo(e, "#tentang-kami")}
-                                className="text-sm font-semibold text-slate-700 hover:text-[#2D5A27] transition cursor-pointer"
+                                className="text-sm font-semibold text-slate-600 hover:text-[#2D5A27] transition-colors relative py-1 after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:bg-[#2D5A27] hover:after:w-full after:transition-all after:duration-300 cursor-pointer"
                             >
                                 Tentang Kami
                             </a>
                             <a
+                                href="#visi-misi"
+                                onClick={(e) => handleScrollTo(e, "#visi-misi")}
+                                className="text-sm font-semibold text-slate-600 hover:text-[#2D5A27] transition-colors relative py-1 after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:bg-[#2D5A27] hover:after:w-full after:transition-all after:duration-300 cursor-pointer"
+                            >
+                                Visi & Misi
+                            </a>
+                            <a
+                                href="#teknologi"
+                                onClick={(e) => handleScrollTo(e, "#teknologi")}
+                                className="text-sm font-semibold text-slate-600 hover:text-[#2D5A27] transition-colors relative py-1 after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:bg-[#2D5A27] hover:after:w-full after:transition-all after:duration-300 cursor-pointer"
+                            >
+                                Fasilitas
+                            </a>
+                            <a
                                 href="#produk"
                                 onClick={(e) => handleScrollTo(e, "#produk")}
-                                className="text-sm font-semibold text-slate-700 hover:text-[#2D5A27] transition cursor-pointer"
+                                className="text-sm font-semibold text-slate-600 hover:text-[#2D5A27] transition-colors relative py-1 after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:bg-[#2D5A27] hover:after:w-full after:transition-all after:duration-300 cursor-pointer"
                             >
                                 Produk
                             </a>
                             <a
                                 href="#kemitraan"
                                 onClick={(e) => handleScrollTo(e, "#kemitraan")}
-                                className="text-sm font-semibold text-slate-700 hover:text-[#2D5A27] transition cursor-pointer"
+                                className="text-sm font-semibold text-slate-600 hover:text-[#2D5A27] transition-colors relative py-1 after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:bg-[#2D5A27] hover:after:w-full after:transition-all after:duration-300 cursor-pointer"
                             >
                                 Kemitraan
                             </a>
                         </div>
 
-                        {/* CTA */}
-                        <div>
+                        {/* CTA (Desktop) */}
+                        <div className="hidden lg:block">
                             <a
                                 href={getGeneralWhatsAppUrl()}
                                 className="rounded-lg bg-[#2D5A27] px-5 py-2 text-sm font-semibold text-white hover:bg-[#20441c] shadow-sm transition"
@@ -175,8 +178,109 @@ export default function Welcome({
                                 Hubungi kami
                             </a>
                         </div>
+
+                        {/* Mobile Menu Hamburger Button */}
+                        <div className="flex items-center lg:hidden">
+                            <button
+                                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                                className="inline-flex items-center justify-center p-2 rounded-lg text-slate-500 hover:text-slate-800 hover:bg-slate-100 focus:outline-none transition duration-150 cursor-pointer"
+                                aria-label="Toggle menu"
+                            >
+                                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    {isMobileMenuOpen ? (
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                    ) : (
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                                    )}
+                                </svg>
+                            </button>
+                        </div>
                     </div>
                 </div>
+
+                {/* Mobile Menu Dropdown Panel */}
+                <AnimatePresence>
+                    {isMobileMenuOpen && (
+                        <motion.div
+                            className="lg:hidden bg-white border-t border-slate-100 shadow-lg overflow-hidden"
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: "auto" }}
+                            exit={{ opacity: 0, height: 0 }}
+                            transition={{ duration: 0.25, ease: "easeInOut" }}
+                        >
+                            <div className="px-4 pt-2 pb-6 space-y-3">
+                                <a
+                                    href="#beranda"
+                                    onClick={(e) => {
+                                        handleScrollTo(e, "#beranda");
+                                        setIsMobileMenuOpen(false);
+                                    }}
+                                    className="block rounded-lg px-3 py-2 text-base font-semibold text-slate-700 hover:text-[#2D5A27] hover:bg-slate-50 transition"
+                                >
+                                    Beranda
+                                </a>
+                                <a
+                                    href="#tentang-kami"
+                                    onClick={(e) => {
+                                        handleScrollTo(e, "#tentang-kami");
+                                        setIsMobileMenuOpen(false);
+                                    }}
+                                    className="block rounded-lg px-3 py-2 text-base font-semibold text-slate-700 hover:text-[#2D5A27] hover:bg-slate-50 transition"
+                                >
+                                    Tentang Kami
+                                </a>
+                                <a
+                                    href="#visi-misi"
+                                    onClick={(e) => {
+                                        handleScrollTo(e, "#visi-misi");
+                                        setIsMobileMenuOpen(false);
+                                    }}
+                                    className="block rounded-lg px-3 py-2 text-base font-semibold text-slate-700 hover:text-[#2D5A27] hover:bg-slate-50 transition"
+                                >
+                                    Visi & Misi
+                                </a>
+                                <a
+                                    href="#teknologi"
+                                    onClick={(e) => {
+                                        handleScrollTo(e, "#teknologi");
+                                        setIsMobileMenuOpen(false);
+                                    }}
+                                    className="block rounded-lg px-3 py-2 text-base font-semibold text-slate-700 hover:text-[#2D5A27] hover:bg-slate-50 transition"
+                                >
+                                    Fasilitas
+                                </a>
+                                <a
+                                    href="#produk"
+                                    onClick={(e) => {
+                                        handleScrollTo(e, "#produk");
+                                        setIsMobileMenuOpen(false);
+                                    }}
+                                    className="block rounded-lg px-3 py-2 text-base font-semibold text-slate-700 hover:text-[#2D5A27] hover:bg-slate-50 transition"
+                                >
+                                    Produk
+                                </a>
+                                <a
+                                    href="#kemitraan"
+                                    onClick={(e) => {
+                                        handleScrollTo(e, "#kemitraan");
+                                        setIsMobileMenuOpen(false);
+                                    }}
+                                    className="block rounded-lg px-3 py-2 text-base font-semibold text-slate-700 hover:text-[#2D5A27] hover:bg-slate-50 transition"
+                                >
+                                    Kemitraan
+                                </a>
+                                <div className="pt-4 border-t border-slate-100">
+                                    <a
+                                        href={getGeneralWhatsAppUrl()}
+                                        className="flex w-full items-center justify-center rounded-lg bg-[#2D5A27] py-2.5 px-4 text-center text-sm font-semibold text-white hover:bg-[#20441c] shadow-sm transition"
+                                    >
+                                        Hubungi kami
+                                    </a>
+                                </div>
+                            </div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
             </nav>
 
             <div className="mx-auto max-w-full w-full px-4 sm:px-6 lg:px-8 pt-20 bg-white">
@@ -422,18 +526,18 @@ export default function Welcome({
                     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 grid grid-cols-2 md:grid-cols-4 text-center">
                         <div className="py-6 md:py-2 px-4 sm:px-6 lg:px-8 border-r border-b border-slate-200 md:border-b-0">
                             <p className="text-4xl font-extrabold text-[#2D5A27]">
-                                15+
+                                10.000 m2
                             </p>
                             <p className="text-xs sm:text-sm text-slate-900 font-medium mt-2.5">
-                                Kemitraan
+                                Luas Fasilitas
                             </p>
                         </div>
                         <div className="py-6 md:py-2 px-4 sm:px-6 lg:px-8 md:border-r border-b border-slate-200 md:border-b-0">
                             <p className="text-4xl font-extrabold text-[#2D5A27]">
-                                1.2M
+                                1200+
                             </p>
                             <p className="text-xs sm:text-sm text-slate-900 font-medium mt-2.5">
-                                Ton metrik tahun 2025
+                                Petani Mitra
                             </p>
                         </div>
                         <div className="py-6 md:py-2 px-4 sm:px-6 lg:px-8 border-r border-slate-200">
@@ -446,10 +550,10 @@ export default function Welcome({
                         </div>
                         <div className="py-6 md:py-2 px-4 sm:px-6 lg:px-8">
                             <p className="text-4xl font-extrabold text-[#2D5A27]">
-                                1.200+
+                                1.5 Juta
                             </p>
                             <p className="text-xs sm:text-sm text-slate-900 font-medium mt-2.5">
-                                Petani Mitra
+                                Kg per-bulan
                             </p>
                         </div>
                     </div>
@@ -475,10 +579,10 @@ export default function Welcome({
                             transition={{ duration: 0.8 }}
                         >
                             <div className="space-y-3">
-                                <span className="text-sm font-semibold text-[#2D5A27]">
+                                <span className="text-sm font-bold uppercase tracking-wider text-[#2D5A27] block">
                                     Siapa Kami
                                 </span>
-                                <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 leading-tight">
+                                <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight leading-tight">
                                     Dibangun atas dasar{" "}
                                     <span className="text-[#2D5A27]">
                                         kepercayaan,
@@ -548,7 +652,7 @@ export default function Welcome({
                                             </svg>
                                         ),
                                         title: "Bahan Baku Pilihan",
-                                        desc: "Bersumber dari bahan baku gabah & beras pilihan dengan standard kualitas yang tinggi",
+                                        desc: "Bersumber dari menggunakan bahan baku terpilih dan sesuai dengan standar kualitas.Pemilihan bahan baku yang baik menjadi langkah awal dalam menghasilkan produk berkualitas.",
                                     },
                                     {
                                         icon: (
@@ -567,7 +671,7 @@ export default function Welcome({
                                             </svg>
                                         ),
                                         title: "Teknologi Tinggi",
-                                        desc: "Diproses menggunakan teknologi tinggi yang menghasilkan beras premium berkualitas",
+                                        desc: "Perusahaan terus berinvenstasi dalam penggunaan teknologi modern untuk memastikan proses produksi yang efisien dan akurat. Mesin-mesin canggih digunakan dalam tahap penggilingan, pengeringan, sortir hingga pengemasan. Hal ini membantu menjaga konsistensi kualitas produk",
                                     },
                                     {
                                         icon: (
@@ -591,27 +695,8 @@ export default function Welcome({
                                                 />
                                             </svg>
                                         ),
-                                        title: "Pengawasan Ahli",
-                                        desc: "Diawasi oleh ahli yang berpengalaman lebih dari 30 tahun untuk menjaga mutu produk",
-                                    },
-                                    {
-                                        icon: (
-                                            <svg
-                                                className="h-6 w-6 text-green-700"
-                                                fill="none"
-                                                viewBox="0 0 24 24"
-                                                stroke="currentColor"
-                                            >
-                                                <path
-                                                    strokeLinecap="round"
-                                                    strokeLinejoin="round"
-                                                    strokeWidth={1.8}
-                                                    d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"
-                                                />
-                                            </svg>
-                                        ),
-                                        title: "Tersetifikasi",
-                                        desc: "Jaminan produk aman dengan sistem keamanan pangan yang telah tersertifikasi",
+                                        title: "Pengawasan Ketat",
+                                        desc: "Setiap tahap produksi diawasi secara ketat oleh tim ahli. Pengujian laboratorium dilakukan untuk memastikan kualitas produk. Jika ada ketidaksesuaian, perbaikan segera dilakukan untuk memastikan produk tetap memenuhi standar.",
                                     },
                                 ].map((item, i) => (
                                     <div
@@ -662,6 +747,395 @@ export default function Welcome({
                             </div>
                         </motion.div>
                     </div>
+                </div>
+            </section>
+
+            <section
+                id="visi-misi"
+                className="relative w-full bg-gradient-to-b from-white via-emerald-50/5 to-white scroll-mt-16 py-16 lg:py-24 border-t border-slate-100 overflow-hidden"
+            >
+                {/* Decorative section blurs */}
+                <div className="absolute top-1/4 left-0 w-96 h-96 bg-emerald-500/5 rounded-full blur-3xl pointer-events-none" />
+                <div className="absolute bottom-1/4 right-0 w-96 h-96 bg-emerald-500/5 rounded-full blur-3xl pointer-events-none" />
+
+                <div className="mx-auto w-full max-w-[1440px] px-6 sm:px-10 lg:px-16 relative z-10">
+
+                    {/* Two-Column Grid */}
+                    <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-start">
+
+                        {/* LEFT COLUMN: VISI */}
+                        <motion.div
+                            className="space-y-6 text-left lg:pr-8"
+                            initial={{ opacity: 0, x: -30 }}
+                            whileInView={{ opacity: 1, x: 0 }}
+                            viewport={{ once: true, margin: "-100px" }}
+                            transition={{ duration: 0.8 }}
+                        >
+                            <div className="space-y-3">
+                                <span className="text-sm font-bold uppercase tracking-wider text-[#2D5A27] block">
+                                    Visi Perusahaan
+                                </span>
+                                <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight leading-tight">
+                                    Landasan Utama <br />
+                                    <span className="text-[#2D5A27]">Kinerja Kami</span>
+                                </h2>
+
+                                <div className="relative mt-8 p-8 sm:p-10 rounded-3xl bg-gradient-to-br from-emerald-50/30 via-white to-white border border-emerald-500/10 shadow-sm overflow-hidden group">
+                                    {/* Decorative subtle gradient background circle */}
+                                    <div className="absolute -top-10 -right-10 w-32 h-32 bg-[#2D5A27]/5 rounded-full blur-2xl group-hover:bg-[#2D5A27]/10 transition-colors duration-500" />
+
+                                    {/* Quote Icon SVG */}
+                                    <svg className="h-10 w-10 text-[#2D5A27]/20 mb-5" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-4.765 2.827-4.765 5.71h5.77v10.139h-10.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-4.795 2.827-4.795 5.71h5.8v10.139h-11z" />
+                                    </svg>
+
+                                    <p className="text-base sm:text-lg lg:text-[19px] text-slate-700 font-semibold leading-relaxed relative z-10">
+                                        "Produk yang dihasilkan oleh PT SINDANG ASIH MAKMUR berlandaskan nilai-nilai keamanan pangan & kepuasan pelanggan serta terbaik dari segi kualitas dan harga."
+                                    </p>
+
+                                    <div className="mt-6 flex items-center gap-3">
+                                        <div className="h-[2px] w-8 bg-[#2D5A27]" />
+                                        <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                                            Komitmen Utama Kami
+                                        </span>
+                                    </div>
+                                </div>
+
+                                {/* 3 Pilar Komitmen di bawah kartu Visi */}
+                                <div className="grid grid-cols-3 gap-4 mt-6">
+                                    {[
+                                        {
+                                            title: "Higienitas & Bersih",
+                                            desc: "Standar kebersihan ketat",
+                                            icon: (
+                                                <svg className="h-5 w-5 text-[#2D5A27]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                                                </svg>
+                                            )
+                                        },
+                                        {
+                                            title: "Kualitas SNI",
+                                            desc: "Mutu beras terjamin resmi",
+                                            icon: (
+                                                <svg className="h-5 w-5 text-[#2D5A27]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                </svg>
+                                            )
+                                        },
+                                        {
+                                            title: "Harga Terbaik",
+                                            desc: "Nilai terbaik bagi pelanggan",
+                                            icon: (
+                                                <svg className="h-5 w-5 text-[#2D5A27]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                </svg>
+                                            )
+                                        }
+                                    ].map((pilar, idx) => (
+                                        <div
+                                            key={idx}
+                                            className="bg-white hover:bg-emerald-50/20 border border-slate-100 hover:border-emerald-500/10 p-4 sm:p-5 rounded-2xl transition-all duration-300 group flex flex-col items-center text-center space-y-2 shadow-[0_2px_8px_-3px_rgba(0,0,0,0.04)] hover:shadow-md"
+                                        >
+                                            <div className="h-10 w-10 rounded-xl bg-emerald-50 text-[#2D5A27] flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                                                {pilar.icon}
+                                            </div>
+                                            <div className="space-y-0.5">
+                                                <p className="text-xs sm:text-[13px] font-extrabold text-slate-800">
+                                                    {pilar.title}
+                                                </p>
+                                                <p className="text-[10px] sm:text-[11px] text-slate-400 font-semibold leading-tight">
+                                                    {pilar.desc}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </motion.div>
+
+                        {/* RIGHT COLUMN: MISI */}
+                        <motion.div
+                            className="space-y-6 text-left"
+                            initial={{ opacity: 0, x: 30 }}
+                            whileInView={{ opacity: 1, x: 0 }}
+                            viewport={{ once: true, margin: "-100px" }}
+                            transition={{ duration: 0.8, delay: 0.2 }}
+                        >
+                            <div className="space-y-3">
+                                <span className="text-sm font-bold uppercase tracking-wider text-[#2D5A27] block">
+                                    Misi Kami
+                                </span>
+
+                                <div className="grid grid-cols-1 gap-4">
+                                    {[
+                                        {
+                                            num: "01",
+                                            title: "Ketersediaan & Kemitraan Pangan",
+                                            text: "Senantiasa menjaga ketersediaan bahan olahan (padi/gabah, beras) dengan cara menjalin kemitraan dengan petani serta penyalur beras dari dalam dan luar daerah."
+                                        },
+                                        {
+                                            num: "02",
+                                            title: "Relasi Pemasok & Mitra Kerja",
+                                            text: "Senantiasa menjaga relasi yang baik dengan para penyedia bahan baku dan mitra kerja (petani, pemasok)."
+                                        },
+                                        {
+                                            num: "03",
+                                            title: "Higienitas & Standar SNI",
+                                            text: "Senantiasa menjaga hygienitas bahan, alat proses, serta tenaga pengolah (pegawai) dengan menerapkan peraturan yang ketat sesuai dengan Standard Nasional Indonesia & peraturan terkait."
+                                        },
+                                        {
+                                            num: "04",
+                                            title: "Pelayanan Prima & Distribusi",
+                                            text: "Senantiasa memberikan pelayanan yang prima mulai dari proses pemesanan hingga pendistribusian kepada pelanggan dengan prioritas ketepatan waktu serta tujuan."
+                                        }
+                                    ].map((misi, i) => (
+                                        <div
+                                            key={i}
+                                            className="group flex gap-5 items-start bg-slate-50/40 hover:bg-white border border-slate-100 hover:border-emerald-500/20 p-5 rounded-2xl shadow-[0_2px_8px_-3px_rgba(0,0,0,0.05)] hover:shadow-md transition-all duration-300"
+                                        >
+                                            <div className="shrink-0 h-11 w-11 rounded-xl bg-emerald-50 text-[#2D5A27] flex items-center justify-center text-sm font-extrabold shadow-inner group-hover:bg-[#2D5A27] group-hover:text-white transition-all duration-300">
+                                                {misi.num}
+                                            </div>
+                                            <div className="space-y-1">
+                                                <p className="text-xs sm:text-sm font-extrabold text-slate-800 tracking-wider transition-colors duration-300 group-hover:text-[#2D5A27] uppercase">
+                                                    {misi.title}
+                                                </p>
+                                                <p className="text-[13px] sm:text-sm text-slate-500 leading-relaxed font-medium">
+                                                    {misi.text}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </motion.div>
+
+                    </div>
+                </div>
+            </section>
+
+            {/* Header Budaya Kerja & Nilai Utama Kami (Centered on white background above the green box) */}
+            <div className="mx-auto w-full max-w-[1720px] px-4 sm:px-6 lg:px-8 text-center pt-20 pb-10">
+                <span className="text-sm font-bold uppercase tracking-wider text-[#2D5A27] block">
+                    Budaya Kerja
+                </span>
+                <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight leading-tight mt-2">
+                    Nilai Utama Kami
+                </h2>
+            </div>
+
+            {/* BOTTOM SECTION: NILAI UTAMA KAMI (Full-bleed banner with centered content, wrapping only the cards) */}
+            <motion.section
+                id="nilai-utama"
+                className="w-full bg-gradient-to-r from-[#2D5A27] via-[#20441c] to-[#152e12] py-12 text-white relative overflow-hidden border-t border-b border-emerald-900/40"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ duration: 0.8 }}
+            >
+                {/* Decorative blur filters */}
+                <div className="absolute top-0 right-0 w-80 h-80 bg-white/[0.04] rounded-full blur-3xl pointer-events-none" />
+                <div className="absolute bottom-0 left-0 w-80 h-80 bg-black/20 rounded-full blur-3xl pointer-events-none" />
+
+                <div className="mx-auto w-full max-w-[1720px] px-4 sm:px-6 lg:px-8 relative z-10 text-left">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+                        {[
+                            {
+                                title: "Kontrol Kualitas",
+                                desc: "Memprioritaskan kontrol kualitas yang ketat dalam setiap tahap produksi. Dari pemilihan bahan baku hingga proses pengemasan, perusahaan memastikan bahwa beras yang dihasilkan memenuhi standar kualitas tertinggi.",
+                                icon: (
+                                    <svg className="h-6 w-6 text-[#a8d39e]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                                    </svg>
+                                )
+                            },
+                            {
+                                title: "Fokus Pada Pelanggan",
+                                desc: "Kami selalu berusaha memahami kebutuhan dan preferensi pelanggan. Dengan mendengarkan masukan dan umpan balik, perusahaan dapat terus meningkatkan layanan dan produknya agar sesuai dengan harapan pelanggan.",
+                                icon: (
+                                    <svg className="h-6 w-6 text-[#a8d39e]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                                    </svg>
+                                )
+                            },
+                            {
+                                title: "Integritas & Profesional",
+                                desc: "Integritas adalah pondasi bisnis yang kuat. Kami berkomitmen untuk beroperasi dengan etika yang tinggi. Karyawan perusahaan diharapkan menjunjung tinggi integritas, transparansi, dan tanggung jawab.",
+                                icon: (
+                                    <svg className="h-6 w-6 text-[#a8d39e]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                                    </svg>
+                                )
+                            },
+                            {
+                                title: "Patuh Regulasi",
+                                desc: "Mematuhi semua peraturan dan regulasi yang berlaku. Dari izin usaha hingga standar kebersihan dan keamanan, perusahaan selalu beroperasi sesuai dengan ketentuan pemerintah.",
+                                icon: (
+                                    <svg className="h-6 w-6 text-[#a8d39e]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                    </svg>
+                                )
+                            }
+                        ].map((value, idx) => (
+                            <div
+                                key={idx}
+                                className="bg-white/5 hover:bg-white/[0.08] border border-white/10 hover:border-white/20 p-5 sm:p-6 rounded-2xl transition-all duration-300 group flex flex-col justify-between"
+                            >
+                                <div className="space-y-4">
+                                    <div className="h-10 w-10 rounded-xl bg-white/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                                        {value.icon}
+                                    </div>
+                                    <div className="space-y-2">
+                                        <h4 className="text-[17px] font-extrabold text-white tracking-wide group-hover:text-[#a8d39e] transition-colors duration-300">
+                                            {value.title}
+                                        </h4>
+                                        <p className="text-[13px] text-emerald-100/90 leading-relaxed font-normal">
+                                            {value.desc}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </motion.section>
+
+            {/* ═══════════════════════════════════════════
+                SECTION — PENERAPAN TEKNOLOGI
+            ═══════════════════════════════════════════ */}
+            <section
+                id="teknologi"
+                className="relative w-full bg-gradient-to-b from-white via-slate-50 to-white flex flex-col items-center justify-center scroll-mt-16 py-16 lg:py-24 border-t border-slate-100"
+            >
+                <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 flex flex-col items-center">
+                    {/* Header: Judul & Deskripsi */}
+                    <motion.div
+                        className="max-w-3xl text-center px-4 mb-12"
+                        initial={{ opacity: 0, y: 25 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true, margin: "-100px" }}
+                        transition={{ duration: 0.6 }}
+                    >
+                        <span className="text-sm font-bold uppercase tracking-wider text-[#2D5A27] block">
+                            Standar Mutu Modern
+                        </span>
+                        <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight leading-tight mt-2">
+                            Penerapan Teknologi
+                        </h2>
+                        <div className="h-1 w-16 bg-[#2D5A27] mx-auto mt-4 rounded-full" />
+                        <p className="text-sm sm:text-base text-slate-500 mt-4 leading-relaxed">
+                            Untuk menjamin kualitas terbaik beras premium, kami menggunakan dukungan mesin pengolahan modern dengan standar teknologi tinggi dalam setiap tahapan proses produksi.
+                        </p>
+                    </motion.div>
+
+                    {/* Gallery Container */}
+                    <motion.div
+                        className="grid grid-cols-1 md:flex md:items-stretch gap-4 w-full max-w-7xl md:h-[450px] px-2 mt-4"
+                        initial={{ opacity: 0, y: 35 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true, margin: "-100px" }}
+                        transition={{ duration: 0.8, delay: 0.2 }}
+                    >
+                        {[
+                            {
+                                title: "COLOUR SORTER",
+                                subtitle: "CCD Camera Technology",
+                                image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=800&h=800&auto=format&fit=crop",
+                                description: "Colour sorter berperan penting untuk menjamin produk beras yang dihasilkan bebas dari kontaminasi beras berwarna lain, cacat atau benda asing menggunakan teknologi CCD Camera yang canggih.",
+                                icon: (
+                                    <svg className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    </svg>
+                                )
+                            },
+                            {
+                                title: "RICE POLISHER",
+                                subtitle: "Japanese Polishing Tech",
+                                image: "https://images.unsplash.com/photo-1586201375761-83865001e31c?q=80&w=800&h=800&auto=format&fit=crop",
+                                description: "Untuk menghasilkan beras yang putih, bersih dan mengkilat, kami menggunakan polisher canggih berteknologi Jepang yang aman dan alami.",
+                                icon: (
+                                    <svg className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                                    </svg>
+                                )
+                            },
+                            {
+                                title: "RICE GRADER",
+                                subtitle: "Integrated Sizing System",
+                                image: "https://images.unsplash.com/photo-1595974482597-4b8da8879bc5?q=80&w=800&h=800&auto=format&fit=crop",
+                                description: "Untuk menghasilkan beras dengan kadar patahan yang terukur, kami menggunakan rice grader modern yang terintegrasi.",
+                                icon: (
+                                    <svg className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+                                    </svg>
+                                )
+                            },
+                            {
+                                title: "DESTONER",
+                                subtitle: "Impurity Extraction",
+                                image: "https://images.unsplash.com/photo-1600132806370-bf17e65e942f?q=80&w=800&h=800&auto=format&fit=crop",
+                                description: "Produk yang kami hasilkan bebas dari kontaminasi batu atau benda asing sejenis berkat dukungan teknologi pemisah batu modern.",
+                                icon: (
+                                    <svg className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                                    </svg>
+                                )
+                            },
+                            {
+                                title: "PADDY SEPARATOR",
+                                subtitle: "Husk-Free Quality",
+                                image: "https://plus.unsplash.com/premium_photo-1682144551791-e400fcae2a2a?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                                description: "Butir gabah yang belum terkelupas dapat dipisahkan secara presisi sehingga tidak ada lagi butir gabah dalam piring nasi Anda.",
+                                icon: (
+                                    <svg className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+                                    </svg>
+                                )
+                            }
+                        ].map((item, idx) => (
+                            <div
+                                key={idx}
+                                className="relative group w-full md:w-36 md:flex-grow h-[350px] md:h-full rounded-2xl overflow-hidden shadow-lg transition-all duration-500 ease-in-out md:hover:w-full border border-slate-100/10 cursor-pointer min-w-[100px] md:min-w-[140px]"
+                            >
+                                {/* Background Image */}
+                                <img
+                                    className="absolute inset-0 h-full w-full object-cover object-center transition-transform duration-700 md:group-hover:scale-105"
+                                    src={item.image}
+                                    alt={item.title}
+                                />
+
+                                {/* Dark Overlay */}
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/70 to-black/30 md:group-hover:from-black/95 md:group-hover:via-black/75 md:group-hover:to-black/45 transition-all duration-500" />
+
+                                {/* Content */}
+                                <div className="absolute inset-0 p-6 sm:p-8 flex flex-col justify-end text-white z-10 select-none">
+                                    {/* Icon Badge */}
+                                    <div className="mb-4 h-10 w-10 rounded-xl bg-[#2D5A27]/90 border border-[#2D5A27] flex items-center justify-center shadow-md">
+                                        {item.icon}
+                                    </div>
+
+                                    {/* Text Content */}
+                                    <h3 className="text-xl md:text-2xl font-black tracking-wider uppercase text-white">
+                                        {item.title}
+                                    </h3>
+
+                                    <p className="text-emerald-400 text-xs md:text-sm font-semibold uppercase tracking-wider mt-1 md:group-hover:opacity-0 md:group-hover:-translate-y-2 md:group-hover:h-0 overflow-hidden transition-all duration-300">
+                                        {item.subtitle}
+                                    </p>
+
+                                    {/* Hidden detailed contents that show up on hover for desktop, and always show on mobile */}
+                                    <div className="mt-3 md:opacity-0 md:max-h-0 md:group-hover:opacity-100 md:group-hover:max-h-[300px] overflow-hidden transition-all duration-500 ease-in-out md:group-hover:delay-100">
+                                        {item.description && (
+                                            <p className="text-xs md:text-sm text-slate-200 leading-relaxed font-medium">
+                                                {item.description}
+                                            </p>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </motion.div>
                 </div>
             </section>
 
@@ -946,6 +1420,24 @@ export default function Welcome({
                                 </li>
                                 <li>
                                     <a
+                                        href="#visi-misi"
+                                        onClick={(e) => handleScrollTo(e, "#visi-misi")}
+                                        className="hover:text-white transition duration-200 cursor-pointer"
+                                    >
+                                        Visi & Misi
+                                    </a>
+                                </li>
+                                <li>
+                                    <a
+                                        href="#teknologi"
+                                        onClick={(e) => handleScrollTo(e, "#teknologi")}
+                                        className="hover:text-white transition duration-200 cursor-pointer"
+                                    >
+                                        Fasilitas
+                                    </a>
+                                </li>
+                                <li>
+                                    <a
                                         href="#produk"
                                         onClick={(e) => handleScrollTo(e, "#produk")}
                                         className="hover:text-white transition duration-200 cursor-pointer"
@@ -973,10 +1465,28 @@ export default function Welcome({
                             <ul className="space-y-2.5 text-sm text-slate-400">
                                 <li>
                                     <a
-                                        href="mailto:customer.care@sindangasih.com"
+                                        href="mailto:sindangasih_cianjur@yahoo.co.id"
                                         className="hover:text-white transition duration-200 break-all"
                                     >
-                                        customer.care@sindangasih.com
+                                        sindangasih_cianjur@yahoo.co.id
+                                    </a>
+                                </li>
+                                <li>
+                                    <a
+                                        href="mailto:sindangasih_cianjur@yahoo.co.id"
+                                        className="hover:text-white transition duration-200 break-all"
+                                    >
+                                        order@sindangasih.com
+                                    </a>
+                                </li>
+                                <li>
+                                    <a
+                                        href={getGeneralWhatsAppUrl()}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        className="hover:text-white transition duration-200"
+                                    >
+                                        0263 266789
                                     </a>
                                 </li>
                                 <li>
@@ -989,9 +1499,9 @@ export default function Welcome({
                                         +62 812-3333-7920 (WA)
                                     </a>
                                 </li>
-                                <li className="text-sm text-slate-400 leading-relaxed">
+                                {/* <li className="text-sm text-slate-400 leading-relaxed">
                                     Senin - Sabtu: 08:00 - 16:00
-                                </li>
+                                </li> */}
                             </ul>
                         </div>
 
@@ -1016,68 +1526,6 @@ export default function Welcome({
                             © {new Date().getFullYear()} PT Sindang Asih Makmur.
                             Hak Cipta Dilindungi.
                         </p>
-
-                        {/* Sosial Media Minimalis */}
-                        <div className="flex items-center justify-center gap-4 text-slate-400">
-                            <a
-                                href="https://instagram.com"
-                                target="_blank"
-                                rel="noreferrer"
-                                className="hover:text-white transition duration-200"
-                                aria-label="Instagram"
-                            >
-                                <svg
-                                    className="h-4.5 w-4.5 fill-none stroke-current"
-                                    viewBox="0 0 24 24"
-                                    strokeWidth={2}
-                                >
-                                    <rect
-                                        x="2"
-                                        y="2"
-                                        width="20"
-                                        height="20"
-                                        rx="5"
-                                        ry="5"
-                                    />
-                                    <path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z" />
-                                    <line
-                                        x1="17.5"
-                                        y1="6.5"
-                                        x2="17.51"
-                                        y2="6.5"
-                                    />
-                                </svg>
-                            </a>
-                            <a
-                                href="mailto:customer.care@sindangasih.com"
-                                className="hover:text-white transition duration-200"
-                                aria-label="Email"
-                            >
-                                <svg
-                                    className="h-4.5 w-4.5 fill-none stroke-current"
-                                    viewBox="0 0 24 24"
-                                    strokeWidth={2}
-                                >
-                                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
-                                    <polyline points="22,6 12,13 2,6" />
-                                </svg>
-                            </a>
-                            <a
-                                href={getGeneralWhatsAppUrl()}
-                                target="_blank"
-                                rel="noreferrer"
-                                className="hover:text-white transition duration-200"
-                                aria-label="WhatsApp"
-                            >
-                                <svg
-                                    className="h-4.5 w-4.5 fill-none stroke-current"
-                                    viewBox="0 0 24 24"
-                                    strokeWidth={2}
-                                >
-                                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
-                                </svg>
-                            </a>
-                        </div>
                     </div>
                 </div>
             </footer>
@@ -1099,7 +1547,7 @@ export default function Welcome({
             <AnimatePresence>
                 {selectedProduct && (
                     <motion.div
-                        className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-md p-4 overflow-y-auto cursor-pointer"
+                        className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 backdrop-blur-md p-4 overflow-y-auto cursor-pointer"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
@@ -1107,10 +1555,10 @@ export default function Welcome({
                         onClick={() => setSelectedProduct(null)}
                     >
                         <motion.div
-                            className="relative w-full max-w-4xl bg-gradient-to-br from-white via-slate-50 to-emerald-50/20 rounded-3xl border border-slate-100 p-6 sm:p-8 md:p-10 shadow-2xl flex flex-col gap-6 cursor-default overflow-hidden"
-                            initial={{ opacity: 0, scale: 0.95, y: 15 }}
+                            className="relative w-full max-w-2xl bg-gradient-to-br from-white via-slate-50 to-emerald-50/10 rounded-2xl border border-slate-100 p-5 sm:p-6 shadow-2xl flex flex-col gap-5 cursor-default overflow-hidden"
+                            initial={{ opacity: 0, scale: 0.96, y: 15 }}
                             animate={{ opacity: 1, scale: 1, y: 0 }}
-                            exit={{ opacity: 0, scale: 0.95, y: 15 }}
+                            exit={{ opacity: 0, scale: 0.96, y: 15 }}
                             transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
                             onClick={(e) => e.stopPropagation()}
                         >
@@ -1118,84 +1566,94 @@ export default function Welcome({
                             <div className="absolute -top-20 -right-20 w-48 h-48 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
                             <div className="absolute -bottom-20 -left-20 w-48 h-48 bg-amber-500/5 rounded-full blur-3xl pointer-events-none" />
 
-                            {/* Header Navigation & Close Button */}
-                            <div className="flex justify-between items-center relative z-10">
-                                <button
-                                    onClick={() => setSelectedProduct(null)}
-                                    className="flex items-center gap-1.5 text-slate-400 hover:text-slate-800 transition font-bold text-xs uppercase tracking-wider cursor-pointer"
-                                >
-                                    <svg
-                                        className="h-3.5 w-3.5"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        stroke="currentColor"
-                                        strokeWidth={3}
-                                    >
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-                                    </svg>
-                                    Kembali
-                                </button>
-                            </div>
+                            {/* Floating Close Button */}
+                            <button
+                                onClick={() => setSelectedProduct(null)}
+                                className="absolute top-4 right-4 z-30 h-8 w-8 rounded-full bg-white/80 hover:bg-white text-slate-500 hover:text-slate-800 flex items-center justify-center transition-all duration-200 cursor-pointer shadow-sm border border-slate-200/50 backdrop-blur-sm"
+                                aria-label="Close modal"
+                            >
+                                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
 
                             {/* Modal Content Grid */}
-                            <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-stretch relative z-10">
-                                {/* Left: Image Container */}
-                                <div className="flex items-center justify-center bg-gradient-to-tr from-slate-50 to-emerald-50/30 border border-slate-100 rounded-2xl p-6 sm:p-8 shadow-sm aspect-square md:aspect-auto select-none hover:shadow-md transition duration-300">
+                            <div className="grid md:grid-cols-2 gap-6 items-center relative z-10">
+                                {/* Left: Image Presentation Card */}
+                                <div className="relative flex items-center justify-center bg-slate-50 border border-slate-100 rounded-xl p-6 shadow-sm aspect-square md:aspect-auto select-none overflow-hidden">
+                                    {/* Subtle dot pattern background */}
+                                    <div className="absolute inset-0 opacity-[0.02] bg-[radial-gradient(#000_1px,transparent_1px)] [background-size:16px_16px] pointer-events-none" />
+
                                     <img
                                         src={selectedProduct.image}
                                         alt={selectedProduct.name}
-                                        className="max-h-[300px] md:max-h-[380px] w-auto object-contain drop-shadow-md hover:scale-105 transition duration-500 ease-out"
+                                        className="max-h-[180px] sm:max-h-[220px] md:max-h-[260px] w-auto object-contain drop-shadow-md hover:scale-105 transition-transform duration-500 ease-out z-10"
                                         onError={(e) => {
                                             e.target.src = "https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&w=600&q=80";
                                         }}
                                     />
                                 </div>
 
-                                {/* Right: Product Details */}
-                                <div className="flex flex-col justify-between">
+                                {/* Right: Product Details Column */}
+                                <div className="flex flex-col justify-between h-full space-y-4">
                                     <div className="space-y-4">
                                         {/* Category Badge */}
                                         {selectedProduct.category && (
-                                            <span className="inline-flex items-center gap-1.5 bg-emerald-50 text-[#2D5A27] text-[10px] sm:text-xs px-3.5 py-1.5 font-bold uppercase tracking-wider rounded-full border border-emerald-100/80">
-                                                <span className="h-1.5 w-1.5 rounded-full bg-[#2D5A27] animate-pulse" />
+                                            <span className="inline-flex items-center gap-1.5 bg-emerald-50 text-[#2D5A27] text-[10px] font-bold uppercase tracking-wider rounded-full border border-emerald-100/50 px-2.5 py-1 w-fit shadow-xs">
+                                                <span className="h-1 w-1 rounded-full bg-[#2D5A27] animate-pulse" />
                                                 {selectedProduct.category}
                                             </span>
                                         )}
 
-                                        {/* Title */}
-                                        <div className="space-y-2">
-                                            <h3 className="text-2xl sm:text-3xl font-extrabold text-slate-900 leading-tight">
+                                        {/* Title & Accent Bar */}
+                                        <div className="space-y-1.5">
+                                            <h3 className="text-xl sm:text-2xl font-extrabold text-slate-900 leading-tight">
                                                 {selectedProduct.name}
                                             </h3>
                                             <div className="h-1 w-12 bg-gradient-to-r from-[#2D5A27] to-emerald-500 rounded-full" />
                                         </div>
 
                                         {/* Description */}
-                                        <p className="text-sm sm:text-base text-slate-600 leading-relaxed font-medium pt-2">
+                                        <p className="text-xs sm:text-sm text-slate-500 leading-relaxed font-medium">
                                             {selectedProduct.description}
                                         </p>
 
-                                        {/* Composition Info Block */}
-                                        {selectedProduct.composition && (
-                                            <div className="bg-slate-50/80 border border-slate-100/80 rounded-2xl p-4.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mt-6 overflow-hidden">
-                                                <div className="flex flex-col shrink-0 pl-2 sm:pl-3">
-                                                    <span className="text-sm font-extrabold text-slate-800">Komposisi</span>
+                                        {/* Specifications Detail Block */}
+                                        <div className="space-y-2 border-t border-slate-100 pt-4 mt-2">
+                                            {selectedProduct.composition && (
+                                                <div className="flex items-center justify-between border-b border-slate-100/60 pb-2">
+                                                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Komposisi</span>
+                                                    <span className="text-xs font-semibold text-slate-700 bg-slate-50 border border-slate-100 rounded-lg px-2.5 py-0.5 shadow-sm">
+                                                        {selectedProduct.composition}
+                                                    </span>
                                                 </div>
-                                                <span className="text-xs sm:text-sm text-slate-700 font-semibold bg-white border border-slate-100 rounded-xl px-4 py-2.5 shadow-sm text-left sm:text-right leading-relaxed max-w-full sm:max-w-[70%] break-words whitespace-normal">
-                                                    {selectedProduct.composition}
+                                            )}
+                                            <div className="flex items-center justify-between border-b border-slate-100/60 pb-2">
+                                                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Tekstur Beras</span>
+                                                <span className="text-xs font-semibold text-[#2D5A27] bg-emerald-50/50 border border-emerald-100/40 rounded-lg px-2.5 py-0.5 shadow-sm">
+                                                    Pulen & Lembut
                                                 </span>
                                             </div>
-                                        )}
+                                            <div className="flex items-center justify-between pb-1">
+                                                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Kemasan Tersedia</span>
+                                                <span className="text-xs font-semibold text-slate-700 bg-slate-50 border border-slate-100 rounded-lg px-2.5 py-0.5 shadow-sm">
+                                                    5 Kg / 10 Kg / 25 Kg
+                                                </span>
+                                            </div>
+                                        </div>
                                     </div>
 
-                                    {/* Buy Button */}
+                                    {/* Buy Button with WhatsApp Branding */}
                                     <a
                                         href={getWhatsAppUrl(selectedProduct.name)}
                                         target="_blank"
                                         rel="noreferrer"
-                                        className="mt-8 flex w-full items-center justify-center gap-2.5 rounded-xl bg-gradient-to-r from-[#2D5A27] to-[#1f421b] py-3.5 px-6 text-base font-bold text-white hover:from-[#20441c] hover:to-[#173214] transition-all duration-300 shadow-[0_4px_14px_rgba(45,90,39,0.25)] hover:shadow-[0_6px_20px_rgba(45,90,39,0.35)] active:scale-[0.98] cursor-pointer"
+                                        className="mt-4 flex w-full items-center justify-center gap-2.5 rounded-xl bg-gradient-to-r from-[#2D5A27] to-[#1e3d1a] py-3 px-5 text-sm font-bold text-white hover:shadow-lg hover:shadow-emerald-900/15 hover:scale-[1.01] active:scale-[0.98] transition-all duration-300 shadow-md border border-emerald-800/10 cursor-pointer"
                                     >
-                                        Beli Sekarang
+                                        <svg className="h-5 w-5 fill-current" viewBox="0 0 24 24">
+                                            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L0 24l6.335-1.662c1.746.953 3.71 1.458 5.704 1.46h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+                                        </svg>
+                                        <span>Hubungi Via WhatsApp</span>
                                     </a>
                                 </div>
                             </div>
