@@ -46,8 +46,20 @@ export default function Welcome({
         e.preventDefault();
         const element = document.querySelector(targetId);
         if (element && lenisRef.current) {
+            const viewportHeight = window.innerHeight;
+            const elementHeight = element.offsetHeight;
+            
+            // Calculate offset to center the element
+            let offset = -(viewportHeight - elementHeight) / 2;
+
+            // If the element is taller than the available viewport height (subtracting navbar height),
+            // align it to the top instead so the start of the section is visible
+            if (elementHeight > viewportHeight - 64) {
+                offset = -64;
+            }
+
             lenisRef.current.scrollTo(element, {
-                offset: -64,
+                offset: offset,
                 duration: 1.5,
             });
         }
@@ -193,15 +205,17 @@ export default function Welcome({
                                     {/* Teks slide — tengah vertikal & horizontal */}
                                     <div className="relative z-20 flex h-full items-center justify-center px-6 text-center">
                                         <div className="space-y-4 max-w-3xl">
-                                            <h1
-                                                className="text-4xl sm:text-5xl md:text-6xl font-black text-white uppercase tracking-wider leading-tight"
-                                                style={{
-                                                    textShadow:
-                                                        "0 4px 18px rgba(0, 0, 0, 0.45)",
-                                                }}
-                                            >
-                                                {slide.title}
-                                            </h1>
+                                            {slide.title && (
+                                                <h1
+                                                    className="text-4xl sm:text-5xl md:text-6xl font-black text-white uppercase tracking-wider leading-tight"
+                                                    style={{
+                                                        textShadow:
+                                                            "0 4px 18px rgba(0, 0, 0, 0.45)",
+                                                    }}
+                                                >
+                                                    {slide.title}
+                                                </h1>
+                                            )}
                                             {slide.subtitle && (
                                                 <p className="text-base sm:text-lg text-slate-200 max-w-xl mx-auto font-medium">
                                                     {slide.subtitle}
@@ -714,7 +728,7 @@ export default function Welcome({
 
                                         {/* Konten bawah */}
                                         <div className="flex flex-1 flex-col p-6 gap-3">
-                                            <h3 className="text-base font-bold text-slate-900 text-center">
+                                            <h3 className="text-xl font-bold text-slate-900 text-center">
                                                 {product.name}
                                             </h3>
                                             <p className="text-sm text-slate-500 text-center leading-relaxed line-clamp-4 flex-1">
@@ -755,10 +769,10 @@ export default function Welcome({
 
                                             {/* Konten bawah */}
                                             <div className="flex flex-1 flex-col p-6 gap-3">
-                                                <h3 className="text-base font-bold text-slate-900 text-center">
+                                                <h3 className="text-2xl font-bold text-slate-900 text-center">
                                                     {product.name}
                                                 </h3>
-                                                <p className="text-sm text-slate-500 text-center leading-relaxed line-clamp-4 flex-1">
+                                                <p className="text-base text-slate-500 text-center leading-relaxed line-clamp-4 flex-1">
                                                     {product.description}
                                                 </p>
                                                 <button

@@ -25,7 +25,7 @@ class CarouselController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'title' => 'required|string|max:255',
+            'title' => 'nullable|string|max:255',
             'subtitle' => 'nullable|string|max:255',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
             'is_active' => 'required|boolean',
@@ -49,7 +49,7 @@ class CarouselController extends Controller
     public function update(Request $request, Carousel $carousell)
     {
         $request->validate([
-            'title' => 'required|string|max:255',
+            'title' => 'nullable|string|max:255',
             'subtitle' => 'nullable|string|max:255',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
             'is_active' => 'required|boolean',

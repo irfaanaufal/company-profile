@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
         // 1. Create Default Admin User
         User::create([
             'name' => 'Admin Sindangasih',
+            'username' => 'admin',
             'email' => 'admin@sindangasih.com',
             'password' => Hash::make('password'),
             'email_verified_at' => now(),
@@ -61,23 +62,23 @@ class DatabaseSeeder extends Seeder
 
         // 4. Create Default Products
         Product::create([
-            'name' => 'Setra Ramos Premium',
-            'slug' => 'premium-setra-ramos',
-            'description' => 'Setra Ramos Premium adalah beras berkualitas tinggi dengan bulir medium yang pulen dan aroma harum. Pilihan ideal untuk hidangan sehari-hari.',
+            'name' => 'Beras Pandan Wangi',
+            'slug' => 'beras-pandan-wangi',
+            'description' => 'Beras Pandan Wangi Premium adalah beras berkualitas tinggi dengan bulir medium yang pulen dan aroma harum. Pilihan ideal untuk hidangan sehari-hari.',
             'image' => 'https://plus.unsplash.com/premium_photo-1701011134086-a693096c03a4?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-        ]);
-
-        Product::create([
-            'name' => 'Pandan Wangi',
-            'slug' => 'pandan-wangi',
-            'description' => 'Pandan Wangi adalah beras berkualitas tinggi dengan bulir medium yang pulen dan aroma harum. Pilihan ideal untuk hidangan sehari-hari.',
-            'image' => 'https://images.unsplash.com/photo-1610663711502-35f870cfaea2?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
         ]);
 
         Product::create([
             'name' => 'Beras Merah',
             'slug' => 'beras-merah',
             'description' => 'Beras Merah adalah beras berkualitas tinggi dengan bulir medium yang pulen dan aroma harum. Pilihan ideal untuk hidangan sehari-hari.',
+            'image' => 'https://images.unsplash.com/photo-1610663711502-35f870cfaea2?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+        ]);
+
+        Product::create([
+            'name' => 'Beras Nikomaru Premium',
+            'slug' => 'beras-nikomaru-premium',
+            'description' => 'Beras Nikomaru Premium adalah beras berkualitas tinggi dengan bulir medium yang pulen dan aroma harum. Pilihan ideal untuk hidangan sehari-hari.',
             'image' => 'https://images.unsplash.com/photo-1675150303909-1bb94e33132f?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
         ]);
     }

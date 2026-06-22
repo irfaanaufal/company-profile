@@ -190,10 +190,10 @@ export default function Carousel({ carousels }) {
                                                         />
                                                     </td>
                                                     <td className="px-6 py-4 text-sm font-semibold text-gray-900">
-                                                        {carousel.title}
+                                                        {carousel.title || <span className="text-gray-400 italic">Tanpa Judul</span>}
                                                     </td>
                                                     <td className="px-6 py-4 text-sm text-gray-500 max-w-xs truncate">
-                                                        {carousel.subtitle}
+                                                        {carousel.subtitle || <span className="text-gray-400 italic">-</span>}
                                                     </td>
                                                     <td className="whitespace-nowrap px-6 py-4 text-sm">
                                                         {carousel.is_active ? (
@@ -260,7 +260,6 @@ export default function Carousel({ carousels }) {
                                         setData("title", e.target.value)
                                     }
                                     className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                                    required
                                 />
                                 {errors.title && (
                                     <p className="text-red-500 text-xs mt-1">
